@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Agendamento - Barbearia do Neguinho</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Barbearia do Neguinho</h1>
+        <nav>
+            <ul>
+                <li><a href="#inicio">Início</a></li>
+                <li><a href="#agendamento">Agendar Horário</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="inicio">
+            <div class="imagem-destaque"></div> 
+            <h2>Bem-vindo ao Mario Moraes</h2>
+            <p>Agende seu horário com nossos profissionais de forma rápida e prática.</p>
+            <p style="font-size: 0.9rem; color: #666; margin-top: 15px; font-weight: bold;">
+                📍 Estrada Atílio Squizatto, 4951 - Sala 2, Roseiral, Jarinu - SP
+            </p>
+        </section>
+
+        <section id="agendamento">
+            <h2>Reserve seu horário</h2>
+            
+            <form id="form-agendamento">
+                <div class="etapa-formulario" id="etapa-servico">
+                    <label for="select-servico">1. Selecione o Serviço:</label>
+                    <select id="select-servico" name="servico" required>
+                        <option value="">Escolha uma opção...</option>
+                    </select>
+                </div>
+
+                <div class="etapa-formulario" id="etapa-profissional">
+                    <label for="select-barbeiro">2. Escolha o Profissional:</label>
+                    <select id="select-barbeiro" name="barbeiro" required>
+                        <option value="">Selecione o barbeiro...</option>
+                    </select>
+                </div>
+
+                <div class="etapa-formulario" id="etapa-data-hora">
+                    <label for="input-data">3. Escolha a Data:</label>
+                    <input type="date" id="input-data" name="data" required>
+
+                    <label for="select-horario">Horário:</label>
+                    <select id="select-horario" name="horario" required>
+                        <option value="">Selecione um horário...</option>
+                    </select>
+                </div>
+
+                <div class="etapa-formulario" id="etapa-cliente">
+                    <label for="input-nome">4. Seu Nome:</label>
+                    <input type="text" id="input-nome" name="nome" placeholder="Digite seu nome" required>
+
+                    <label for="input-whatsapp">Seu WhatsApp:</label>
+                    <input type="tel" id="input-whatsapp" name="whatsapp" placeholder="(11) 99999-9999" required>
+                </div>
+
+                <button type="submit" id="btn-agendar">Confirmar Agendamento</button>
+            </form>
+
+            <div id="comprovante" style="display: none;">
+                <h3>Agendamento Quase Pronto! 🎉</h3>
+                <p id="texto-comprovante"></p>
+                <button onclick="location.reload()" style="margin-top: 15px; background-color: #555;">Fazer novo agendamento</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
