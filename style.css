@@ -1,7 +1,7 @@
 :root {
     --cor-principal: #1a1a1a; 
     --cor-secundaria: #b59410; 
-    --cor-fundo: #fdfdfd;     
+    --cor-fundo: #dddddd;     
     --cor-texto: #4a4a4a;     
     --sombra-suave: 0 10px 20px rgba(0,0,0,0.08);
 }
@@ -14,7 +14,7 @@
 }
 
 body {
-    background-color: #f8f9fa;
+    background-color: #353535;
     color: var(--cor-texto);
     line-height: 1.6;
 }
@@ -90,23 +90,24 @@ h2::after {
     margin: 10px auto 0;
     border-radius: 2px;
 }
-
 .imagem-destaque {
     width: 100%;
-    height: 350px; 
-    
-    /* Puxa a imagem da mesma pasta do projeto */
-    background-image: url('logo.png'); 
-    
-    /* Cover garante que a foto cubra todo o espaço sem espremer ou esticar :)  */
-    background-size: cover; 
-    
-    /* Centraliza o foco da foto */
+    height: 180px; 
+    background-image: url('Fotos/logo.png'); 
+    background-size: contain; 
+    background-repeat: no-repeat;
     background-position: center; 
     
-    border-radius: 12px;
+    /* NOVO: Cria uma "moldura" para destacar a logo */
+    background-color: #ffffff; /* Fundo branco interno */
+    border: 3px solid #f3ad16; /* Borda dourada grossa (a linha amarela que você quer) */
+    border-radius: 90%; /* Deixa a caixa redonda como a logo */
+    
+    /* Garante que a logo não grude na borda da moldura */
+    padding: 10px; 
+    
     margin-bottom: 30px;
-    box-shadow: var(--sombra-suave);
+    box-shadow: 0 20px 15px rgba(0,0,0,0.5); /* Sombra mais forte pra destacar */
 }
 
 #inicio {
