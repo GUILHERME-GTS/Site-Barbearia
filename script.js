@@ -1,4 +1,22 @@
-// Dados temporários até conectar com um banco de verdade (Firebase/Node)
+// Importando o SDK do Firebase (Versão CDN para navegador)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+// Suas chaves de conexão (Puxadas do seu print do Firebase)
+const firebaseConfig = {
+  apiKey: "AIzaSyBpFhgPMtUffKzs_yKFhzPzvCe0WsTICQk",
+  authDomain: "sistema-barbearia-neguinho.firebaseapp.com",
+  projectId: "sistema-barbearia-neguinho",
+  storageBucket: "sistema-barbearia-neguinho.firebasestorage.app",
+  messagingSenderId: "743336103118",
+  appId: "1:743336103118:web:1f413c59546e5644f3549f"
+};
+
+// Start no banco
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Dados da Barbearia
 const servicos = [
     { id: 1, nome: "Corte de Cabelo", preco: 45.00 },
     { id: 2, nome: "Barba", preco: 35.00 },
@@ -11,7 +29,6 @@ const barbeiros = [
     { id: 2, nome: "Marquinho", telefone: "5511943415447" }
 ];
 
-// Horários fixos da barbearia
 const horariosDisponiveis = [
     "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
     "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
@@ -26,92 +43,81 @@ const selectHorario = document.getElementById('select-horario');
 const formAgendamento = document.getElementById('form-agendamento');
 const inputData = document.getElementById('input-data');
 
-// Popula os selects dinamicamente
-function preencherServicos() {
+// Popula os selects via JS
+function init() {
     servicos.forEach(s => {
         const opt = document.createElement('option');
         opt.value = s.id; 
         opt.textContent = `${s.nome} - R$ ${s.preco.toFixed(2)}`;
         selectServico.appendChild(opt);
     });
-}
 
-function preencherBarbeiros() {
     barbeiros.forEach(b => {
         const opt = document.createElement('option');
         opt.value = b.id;
         opt.textContent = b.nome;
         selectBarbeiro.appendChild(opt);
     });
-}
 
-function preencherHorarios() {
     horariosDisponiveis.forEach(h => {
         const opt = document.createElement('option');
         opt.value = h; 
         opt.textContent = h;
         selectHorario.appendChild(opt);
     });
-}
 
-// Trava pra impedir data no passado
-function configurarDataMinima() {
     const hoje = new Date();
-    const hojeFormatado = hoje.toISOString().split('T')[0];
-    
-    inputData.min = hojeFormatado;
-    inputData.value = hojeFormatado; // já deixa pré-preenchido
+    inputData.min = hoje.toISOString().split('T')[0];
+    inputData.value = hoje.toISOString().split('T')[0];
 }
 
-// Init
-preencherServicos();
-preencherBarbeiros();
-preencherHorarios();
-configurarDataMinima();
+init();
 
-// Disparo do formulário pro WhatsApp
-formAgendamento.addEventListener('submit', (e) => {
+// Evento de envio
+formAgendamento.addEventListener('submit', async (e) => {
     e.preventDefault(); 
 
-    // Pega os IDs do form e converte pra número
     const idServico = parseInt(selectServico.value);
     const idBarbeiro = parseInt(selectBarbeiro.value);
-    
     const dataEscolhida = inputData.value;
     const horarioEscolhido = selectHorario.value;
     const nomeCliente = document.getElementById('input-nome').value;
     const whatsappCliente = document.getElementById('input-whatsapp').value;
 
-    // Acha os objetos completos nas listas
     const servico = servicos.find(s => s.id === idServico);
     const barbeiro = barbeiros.find(b => b.id === idBarbeiro);
-    
-    // console.log(servico, barbeiro); // debug
-
-    // Formata data pro padrão BR
     const dataBR = dataEscolhida.split('-').reverse().join('/');
 
-    // Resumo na tela pro cliente conferir
-    const msgTela = `
-        <strong>Cliente:</strong> ${nomeCliente} (${whatsappCliente})<br>
-        <strong>Serviço:</strong> ${servico.nome} (R$ ${servico.preco.toFixed(2)})<br>
-        <strong>Profissional:</strong> ${barbeiro.nome}<br>
-        <strong>Data:</strong> ${dataBR} às ${horarioEscolhido}
-    `;
+    // DISPARO PRO FIREBASE
+    try {
+        await addDoc(collection(db, "agendamentos"), {
+            cliente: nomeCliente,
+            contato: whatsappCliente,
+            servico: servico.nome,
+            profissional: barbeiro.nome,
+            data: dataBR,
+            horario: horarioEscolhido,
+            timestamp: new Date()
+        });
+        console.log("Feito! Gravado no Google.");
+    } catch (err) {
+        console.error("Erro ao salvar:", err);
+    }
 
-    // Monta o texto e o link do Zap
-    const textoZap = `Olá ${barbeiro.nome}! Temos um novo agendamento no site:\n\n👤 *Cliente:* ${nomeCliente} (${whatsappCliente})\n✂️ *Serviço:* ${servico.nome}\n📅 *Data:* ${dataBR} às ${horarioEscolhido}\n💰 *Valor:* R$ ${servico.preco.toFixed(2)}`;
-    
+    // Feedback visual e Zap
+    const textoZap = `Olá ${barbeiro.nome}! Novo agendamento:\n\n👤 *Cliente:* ${nomeCliente}\n✂️ *Serviço:* ${servico.nome}\n📅 *Data:* ${dataBR} às ${horarioEscolhido}`;
     const linkWhatsApp = `https://wa.me/${barbeiro.telefone}?text=${encodeURIComponent(textoZap)}`;
 
-    const btnZap = `
-        <a href="${linkWhatsApp}" target="_blank" style="display: block; background-color: #25D366; color: white; text-decoration: none; padding: 15px; border-radius: 6px; text-align: center; font-weight: bold; margin-top: 20px; transition: 0.3s; font-size: 1.1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-            📱 Confirmar via WhatsApp
+    document.getElementById('texto-comprovante').innerHTML = `
+        <strong>Confirmado:</strong> ${nomeCliente}<br>
+        <strong>Serviço:</strong> ${servico.nome}<br>
+        <strong>Barbeiro:</strong> ${barbeiro.nome}<br>
+        <strong>Data:</strong> ${dataBR} às ${horarioEscolhido}
+        <a href="${linkWhatsApp}" target="_blank" style="display: block; background: #25D366; color: white; padding: 15px; border-radius: 6px; text-align: center; font-weight: bold; margin-top: 20px; text-decoration: none;">
+            📱 Confirmar no WhatsApp
         </a>
     `;
 
-    // Esconde form e mostra comprovante
-    document.getElementById('texto-comprovante').innerHTML = msgTela + btnZap;
     formAgendamento.style.display = 'none'; 
     document.getElementById('comprovante').style.display = 'block'; 
 });
