@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso Restrito - Barbearia do Neguinho</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+        <section style="max-width: 400px; width: 100%; margin: 0;">
+            <div class="imagem-destaque" style="height: 120px; border-radius: 50%;"></div>
+            <h2>Painel do Barbeiro</h2>
+            
+            <form id="form-login">
+                <label for="login-email">E-mail de Acesso:</label>
+                <input type="email" id="login-email" placeholder="exemplo@email.com" required>
+
+                <label for="login-senha">Senha:</label>
+                <input type="password" id="login-senha" placeholder="******" required>
+
+                <button type="submit" id="btn-entrar">Entrar no Sistema</button>
+            </form>
+            
+            <p id="msg-erro" style="color: #ff4d4d; text-align: center; margin-top: 15px; display: none; font-weight: bold;">
+                ⚠️ E-mail ou senha incorretos!
+            </p>
+        </section>
+    </main>
+
+    <script type="module" src="login.js"></script>
+</body>
+</html>
