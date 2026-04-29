@@ -30,7 +30,7 @@ const todosHorarios = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12
 const selectServico = document.getElementById('select-servico');
 const selectBarbeiro = document.getElementById('select-barbeiro');
 const selectHorario = document.getElementById('select-horario');
-const selectPagamento = document.getElementById('select-pagamento'); // NOVO
+const selectPagamento = document.getElementById('select-pagamento');
 const inputData = document.getElementById('input-data');
 const formAgendamento = document.getElementById('form-agendamento');
 
@@ -83,9 +83,34 @@ async function atualizarHorariosDisponiveis() {
             opt.textContent = h;
             selectHorario.appendChild(opt);
         });
-
     } catch (err) {
         console.error("Erro ao ler agenda:", err);
+    }
+}
+
+async function gerarPagamentoMercadoPago(servico, cliente) {
+    const access_token = "COLE_SEU_ACCESS_TOKEN_AQUI"; 
+
+    const dadosPagamento = {
+        items: [{ title: servico.nome, unit_price: servico.preco, quantity: 1, currency_id: "BRL" }],
+        payer: { name: cliente.nome },
+        back_urls: {
+            success: window.location.href.replace("index.html", ""),
+            failure: window.location.href.replace("index.html", "")
+        },
+        auto_return: "approved"
+    };
+
+    try {
+        const response = await fetch("https://api.mercadopago.com/checkout/preferences", {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${access_token}`, "Content-Type": "application/json" },
+            body: JSON.stringify(dadosPagamento)
+        });
+        const data = await response.json();
+        return data.init_point; 
+    } catch (error) {
+        return null;
     }
 }
 
@@ -96,96 +121,58 @@ init();
 
 formAgendamento.addEventListener('submit', async (e) => {
     e.preventDefault(); 
+    
+    const btnAgendar = document.getElementById('btn-agendar');
+    btnAgendar.disabled = true;
+    btnAgendar.textContent = "Processando...";
 
     const idServico = parseInt(selectServico.value);
     const idBarbeiro = parseInt(selectBarbeiro.value);
-    const dataEscolhida = inputData.value;
+    const dataBR = inputData.value.split('-').reverse().join('/');
     const horarioEscolhido = selectHorario.value;
     const nomeCliente = document.getElementById('input-nome').value;
     const whatsappCliente = document.getElementById('input-whatsapp').value;
-    const metodoPagamento = selectPagamento.value; // NOVO
+    const metodoPagamento = selectPagamento.value;
 
     const servico = servicos.find(s => s.id === idServico);
     const barbeiro = barbeiros.find(b => b.id === idBarbeiro);
-    const dataBR = dataEscolhida.split('-').reverse().join('/');
 
     try {
-        // AGORA SALVAMOS COM VALOR E STATUS PARA O ADMIN VER
+        let linkMP = null;
+        if (metodoPagamento === 'pix') {
+            linkMP = await gerarPagamentoMercadoPago(servico, { nome: nomeCliente });
+        }
+
         await addDoc(collection(db, "agendamentos"), {
             cliente: nomeCliente,
             contato: whatsappCliente,
             servico: servico.nome,
-            valor: servico.preco, // Essencial para o faturamento total!
+            valor: servico.preco,
             profissional: barbeiro.nome,
             data: dataBR,
             horario: horarioEscolhido,
             pagamento: metodoPagamento,
-            status: "pendente", // Todo agendamento nasce como pendente
+            status: "pendente",
             timestamp: new Date()
         });
         
-        let textoZap = `Olá ${barbeiro.nome}! Novo agendamento:\n\n👤 *Cliente:* ${nomeCliente}\n✂️ *Serviço:* ${servico.nome}\n📅 *Data:* ${dataBR} às ${horarioEscolhido}\n💰 *Pagamento:* ${metodoPagamento.toUpperCase()}`;
-        
-        if (metodoPagamento === 'pix') {
-            textoZap += `\n\n⚠️ *Aguardando confirmação do PIX...*`;
+        let htmlComprovante = `<strong>Confirmado:</strong> ${nomeCliente}<br><strong>Serviço:</strong> ${servico.nome}<br><strong>Data:</strong> ${dataBR} às ${horarioEscolhido}<br>`;
+
+        if (metodoPagamento === 'pix' && linkMP) {
+            htmlComprovante += `<div style="background: #e1f5fe; padding: 15px; border-radius: 8px; margin-top: 15px;"><a href="${linkMP}" target="_blank" style="display: block; background: #009EE3; color: white; padding: 15px; border-radius: 6px; text-align: center; font-weight: bold; margin-top: 10px; text-decoration: none;">💳 PAGAR PIX AGORA</a></div>`;
         }
 
+        const textoZap = `Olá ${barbeiro.nome}! Novo agendamento:\n\n👤 *Cliente:* ${nomeCliente}\n✂️ *Serviço:* ${servico.nome}\n📅 *Data:* ${dataBR} às ${horarioEscolhido}\n💰 *Pgto:* ${metodoPagamento.toUpperCase()}`;
         const linkWhatsApp = `https://wa.me/${barbeiro.telefone}?text=${encodeURIComponent(textoZap)}`;
 
-        document.getElementById('texto-comprovante').innerHTML = `
-            <strong>Confirmado:</strong> ${nomeCliente}<br>
-            <strong>Serviço:</strong> ${servico.nome} (R$ ${servico.preco.toFixed(2)})<br>
-            <strong>Data:</strong> ${dataBR} às ${horarioEscolhido}<br>
-            <strong>Pagamento:</strong> ${metodoPagamento === 'pix' ? 'PIX (Pagar agora)' : 'No local'}<br>
-            <a href="${linkWhatsApp}" target="_blank" style="display: block; background: #25D366; color: white; padding: 15px; border-radius: 6px; text-align: center; font-weight: bold; margin-top: 20px; text-decoration: none;">
-                📱 Avisar Barbeiro no WhatsApp
-            </a>
-        `;
+        htmlComprovante += `<a href="${linkWhatsApp}" target="_blank" style="display: block; background: #25D366; color: white; padding: 15px; border-radius: 6px; text-align: center; font-weight: bold; margin-top: 20px; text-decoration: none;">📱 Avisar no WhatsApp</a>`;
 
+        document.getElementById('texto-comprovante').innerHTML = htmlComprovante;
         formAgendamento.style.display = 'none'; 
         document.getElementById('comprovante').style.display = 'block'; 
     } catch (err) {
-        console.error("Erro ao salvar:", err);
+        alert("Erro. Tente novamente.");
+        btnAgendar.disabled = false;
+        btnAgendar.textContent = "Confirmar Agendamento";
     }
 });
-
-        // Função para gerar o pagamento no Mercado Pago
-async function gerarPagamentoMercadoPago(servico, cliente) {
-    const access_token = "COLE_SEU_ACCESS_TOKEN_AQUI"; // Use um de teste primeiro!
-
-    const dadosPagamento = {
-        items: [
-            {
-                title: servico.nome,
-                unit_price: servico.preco,
-                quantity: 1,
-                currency_id: "BRL"
-            }
-        ],
-        payer: {
-            name: cliente.nome
-        ],
-        back_urls: {
-            success: "https://seusite.github.io/Site-Barbearia/sucesso.html",
-            failure: "https://seusite.github.io/Site-Barbearia/erro.html"
-        },
-        auto_return: "approved"
-    };
-
-    try {
-        const response = await fetch("https://api.mercadopago.com/checkout/preferences", {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${access_token}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(dadosPagamento)
-        });
-
-        const data = await response.json();
-        return data.init_point; // Esse é o link para o cliente pagar
-    } catch (error) {
-        console.error("Erro ao gerar pagamento:", error);
-        return null;
-    }
-}

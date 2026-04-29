@@ -3,39 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Admin - Barbearia do Neguinho</title>
+    <title>Admin - Barbearia do Neguinho</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Estilos extras só para a tabela do admin */
-        .card-agendamento {
-            background: #fff;
-            border-left: 5px solid var(--cor-secundaria);
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 6px;
-            box-shadow: var(--sombra-suave);
-        }
-        .card-agendamento span { font-weight: bold; color: var(--cor-principal); }
-    </style>
 </head>
 <body>
-
     <header>
-        <h1>Painel dos Barbeiros</h1>
+        <h1>Painel do Barbeiro</h1>
         <nav>
             <ul>
-                <li><a href="index.html">⬅️ Voltar ao Site</a></li>
+                <li><a href="index.html">Ver Site</a></li>
             </ul>
         </nav>
     </header>
 
     <main>
-        <section>
-            <h2>Agenda de Clientes</h2>
-            <p style="text-align: center; margin-bottom: 20px;">Todos os agendamentos registrados no sistema.</p>
+        <section id="agenda">
+            <h2 style="text-align: center; color: #fff; background: #333; padding: 10px; border-radius: 8px;">Agenda - Calculando...</h2>
             
-            <div id="lista-agendamentos">
-                <p style="text-align: center;">Carregando dados da nuvem...</p>
+            <div id="lista-agendamentos" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
+                <p style="text-align: center;">Carregando agendamentos...</p>
             </div>
         </section>
     </main>

@@ -22,14 +22,11 @@ form.addEventListener('submit', (e) => {
     const email = document.getElementById('login-email').value;
     const senha = document.getElementById('login-senha').value;
 
-    // Tenta logar no Firebase
     signInWithEmailAndPassword(auth, email, senha)
-        .then((userCredential) => {
-            // Sucesso! Vai para a tela do Admin
+        .then(() => {
             window.location.href = "admin.html";
         })
         .catch((error) => {
-            // Erro (Senha errada ou usuário não existe)
             msgErro.style.display = 'block';
             console.error("Erro no login:", error.code);
         });

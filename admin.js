@@ -2,7 +2,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebas
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
 import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-// Configurações do seu Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBpFhgPMtUffKzs_yKFhzPzvCe0WsTICQk",
   authDomain: "sistema-barbearia-neguinho.firebaseapp.com",
@@ -18,16 +17,14 @@ const auth = getAuth(app);
 
 const containerAgendamentos = document.getElementById('lista-agendamentos');
 
-// 1. TRAVA DE SEGURANÇA: Se não estiver logado, volta pro login
 onAuthStateChanged(auth, (user) => {
     if (!user) {
         window.location.href = "login.html";
     } else {
-        carregarAgenda(); // Só carrega os dados se o login for confirmado
+        carregarAgenda(); 
     }
 });
 
-// 2. FUNÇÃO PARA CARREGAR DADOS E MÉTRICAS
 async function carregarAgenda() {
     let faturamentoTotal = 0;
 
@@ -45,14 +42,12 @@ async function carregarAgenda() {
         resultado.forEach((doc) => {
             const dados = doc.data();
             
-            // Soma o valor para a métrica (garante que seja número)
             const valorServico = parseFloat(dados.valor) || 0;
             faturamentoTotal += valorServico;
 
             const divCard = document.createElement('div');
             divCard.className = 'card-agendamento';
             
-            // Estilização dinâmica baseada no pagamento
             const corPgto = dados.pagamento === 'pix' ? '#25D366' : '#f3ad16';
             const statusLabel = dados.status === 'pago' ? '✅ Pago' : '⏳ Pendente';
 
@@ -60,19 +55,17 @@ async function carregarAgenda() {
                 <p><span>📅 Data:</span> ${dados.data} às ${dados.horario}</p>
                 <p><span>👤 Cliente:</span> ${dados.cliente} (${dados.contato || 'Sem Tel'})</p>
                 <p><span>✂️ Serviço:</span> ${dados.servico} (R$ ${valorServico.toFixed(2)})</p>
-                <p><span>💰 Pagamento:</span> <span style="color: ${corPgto}">${dados.pagamento?.toUpperCase() || 'N/A'}</span></p>
+                <p><span>💰 Pagamento:</span> <span style="color: ${corPgto}; font-weight: bold;">${dados.pagamento?.toUpperCase() || 'N/A'}</span></p>
                 <p><span>📌 Status:</span> <strong>${statusLabel}</strong></p>
             `;
             
             containerAgendamentos.appendChild(divCard);
         });
 
-        // Atualiza o título com o faturamento total do dia
         const titulo = document.querySelector('h2');
         if (titulo) {
-            titulo.innerHTML = `Agenda - Faturamento Total: R$ ${faturamentoTotal.toFixed(2)}`;
+            titulo.innerHTML = `Agenda - Faturamento: R$ ${faturamentoTotal.toFixed(2)}`;
         }
-
     } catch (erro) {
         console.error("Erro ao carregar a agenda:", erro);
         containerAgendamentos.innerHTML = '<p style="color: red; text-align: center;">Erro ao carregar os dados.</p>';
