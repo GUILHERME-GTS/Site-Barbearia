@@ -162,9 +162,15 @@ formAgendamento.addEventListener('submit', async (e) => {
             htmlComprovante += `<div style="background: #e1f5fe; padding: 15px; border-radius: 8px; margin-top: 15px;"><a href="${linkMP}" target="_blank" style="display: block; background: #009EE3; color: white; padding: 15px; border-radius: 6px; text-align: center; font-weight: bold; margin-top: 10px; text-decoration: none;">💳 PAGAR PIX AGORA</a></div>`;
         }
 
-        const textoZap = `Olá ${barbeiro.nome}! Novo agendamento:\n\n👤 *Cliente:* ${nomeCliente}\n✂️ *Serviço:* ${servico.nome}\n📅 *Data:* ${dataBR} às ${horarioEscolhido}\n💰 *Pgto:* ${metodoPagamento.toUpperCase()}`;
-        const linkWhatsApp = `https://wa.me/${barbeiro.telefone}?text=${encodeURIComponent(textoZap)}`;
+        let textoZap = `Olá ${barbeiro.nome}! Novo agendamento:\n\n👤 *Cliente:* ${nomeCliente}\n✂️ *Serviço:* ${servico.nome}\n📅 *Data:* ${dataBR} às ${horarioEscolhido}\n💰 *Pgto:* ${metodoPagamento.toUpperCase()}`;
+        
+        // Se for Pix, adiciona um lembrete para mandar a foto
+        if (metodoPagamento === 'pix') {
+            textoZap += `\n\n📄 *Comprovante:* [Anexe a foto do comprovante nesta conversa]`;
+        }
 
+        const linkWhatsApp = `https://wa.me/${barbeiro.telefone}?text=${encodeURIComponent(textoZap)}`;
+        
         htmlComprovante += `<a href="${linkWhatsApp}" target="_blank" style="display: block; background: #25D366; color: white; padding: 15px; border-radius: 6px; text-align: center; font-weight: bold; margin-top: 20px; text-decoration: none;">📱 Avisar no WhatsApp</a>`;
 
         document.getElementById('texto-comprovante').innerHTML = htmlComprovante;
