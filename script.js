@@ -21,7 +21,7 @@ const servicos = [
 ];
 
 const barbeiros = [
-    { id: 1, nome: "Mário", telefone: "5511998970012" }, 
+    { id: 1, nome: "Mário", telefone: "5511941455171" }, 
     { id: 2, nome: "Marquinho", telefone: "5511943415447" }
 ];
 
@@ -170,7 +170,7 @@ formAgendamento.addEventListener('submit', async (e) => {
         }
 
         const linkWhatsApp = `https://wa.me/${barbeiro.telefone}?text=${encodeURIComponent(textoZap)}`;
-        
+
         htmlComprovante += `<a href="${linkWhatsApp}" target="_blank" style="display: block; background: #25D366; color: white; padding: 15px; border-radius: 6px; text-align: center; font-weight: bold; margin-top: 20px; text-decoration: none;">📱 Avisar no WhatsApp</a>`;
 
         document.getElementById('texto-comprovante').innerHTML = htmlComprovante;

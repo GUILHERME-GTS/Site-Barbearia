@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, query, orderBy, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBpFhgPMtUffKzs_yKFhzPzvCe0WsTICQk",
@@ -25,6 +25,22 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
+// FUNÇÃO PARA CANCELAR (EXCLUIR) O AGENDAMENTO
+async function cancelarAgendamento(id) {
+    const confirmacao = confirm("Tem certeza que deseja cancelar este agendamento? Esta ação não pode ser desfeita.");
+    
+    if (confirmacao) {
+        try {
+            await deleteDoc(doc(db, "agendamentos", id));
+            alert("Agendamento cancelado com sucesso!");
+            carregarAgenda(); // Recarrega a lista para sumir o card
+        } catch (erro) {
+            console.error("Erro ao cancelar:", erro);
+            alert("Erro ao tentar cancelar o agendamento.");
+        }
+    }
+}
+
 async function carregarAgenda() {
     let faturamentoTotal = 0;
 
@@ -36,30 +52,43 @@ async function carregarAgenda() {
 
         if (resultado.empty) {
             containerAgendamentos.innerHTML = '<p style="text-align: center;">Nenhum agendamento encontrado.</p>';
+            const titulo = document.querySelector('h2');
+            if (titulo) titulo.innerHTML = `Agenda - Faturamento: R$ 0,00`;
             return;
         }
 
-        resultado.forEach((doc) => {
-            const dados = doc.data();
+        resultado.forEach((documento) => {
+            const dados = documento.data();
+            const id = documento.id; // Pegamos o ID único do documento no Firebase
             
             const valorServico = parseFloat(dados.valor) || 0;
             faturamentoTotal += valorServico;
 
             const divCard = document.createElement('div');
             divCard.className = 'card-agendamento';
+            divCard.style.position = 'relative'; // Para posicionar o botão se quiser
             
             const corPgto = dados.pagamento === 'pix' ? '#25D366' : '#f3ad16';
-            const statusLabel = dados.status === 'pago' ? '✅ Pago' : '⏳ Pendente';
 
             divCard.innerHTML = `
                 <p><span>📅 Data:</span> ${dados.data} às ${dados.horario}</p>
                 <p><span>👤 Cliente:</span> ${dados.cliente} (${dados.contato || 'Sem Tel'})</p>
                 <p><span>✂️ Serviço:</span> ${dados.servico} (R$ ${valorServico.toFixed(2)})</p>
-                <p><span>💰 Pagamento:</span> <span style="color: ${corPgto}; font-weight: bold;">${dados.pagamento?.toUpperCase() || 'N/A'}</span></p>
-                <p><span>📌 Status:</span> <strong>${statusLabel}</strong></p>
+                <p><span>💰 Pgto:</span> <span style="color: ${corPgto}; font-weight: bold;">${dados.pagamento?.toUpperCase() || 'N/A'}</span></p>
+                <button class="btn-cancelar" data-id="${id}" style="background: #ff4d4d; color: white; margin-top: 10px; padding: 8px; font-size: 13px; width: auto; display: inline-block;">
+                    ❌ Cancelar Agendamento
+                </button>
             `;
             
             containerAgendamentos.appendChild(divCard);
+        });
+
+        // Adiciona o evento de clique em todos os botões de cancelar
+        document.querySelectorAll('.btn-cancelar').forEach(botao => {
+            botao.addEventListener('click', () => {
+                const idAgendamento = botao.getAttribute('data-id');
+                cancelarAgendamento(idAgendamento);
+            });
         });
 
         const titulo = document.querySelector('h2');
