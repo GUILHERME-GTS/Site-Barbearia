@@ -3,80 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barbearia do Neguinho - Agendamento</title>
+    <title>Barbearia do Neguinho</title>
     <link rel="stylesheet" href="style.css">
     
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#f3ad16">
-    <link rel="apple-touch-icon" href="icon-192.png">
-
+    <meta name="theme-color" content="#1a1a1a">
     <script>
-        // Registro do Service Worker
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then(() => console.log("Service Worker ativo!"))
-                .catch(err => console.log("Erro no SW:", err));
+            navigator.serviceWorker.register('sw.js').then(() => console.log("PWA Ativo"));
         }
     </script>
 </head>
 <body>
-    <div id="install-container" style="display: none; background: #f3ad16; padding: 15px; text-align: center; border-bottom: 3px solid #1a1a1a;">
-        <p style="color: #1a1a1a; font-weight: bold; margin-bottom: 10px; font-size: 14px;">
-            📲 Agende mais rápido instalando nosso app!
-        </p>
-        <button id="btn-install" style="background: #1a1a1a; color: #fff; border: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; cursor: pointer;">
-            INSTALAR
-        </button>
-        <button id="btn-close-install" style="background: transparent; border: none; color: #1a1a1a; margin-left: 10px; text-decoration: underline; font-size: 12px; cursor: pointer;">
-            Agora não
-        </button>
+
+    <div id="install-container" style="display: none; background: #f3ad16; padding: 15px; text-align: center; border-bottom: 3px solid #1a1a1a; position: sticky; top: 0; z-index: 1000;">
+        <p style="color: #1a1a1a; font-weight: bold; margin-bottom: 10px;">📲 Instale nosso app para agendar mais rápido!</p>
+        <button id="btn-install" style="background: #1a1a1a; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer;">INSTALAR</button>
+        <button id="btn-close-install" style="background: transparent; border: none; color: #1a1a1a; text-decoration: underline; margin-left: 15px; cursor: pointer;">Depois</button>
     </div>
 
-    <header>
-        <h1>Barbearia do Neguinho</h1>
-        <p>Escolha seu estilo, nós cuidamos do resto.</p>
+    <header class="main-header">
+        <div class="container">
+            <h1>Barbearia do Neguinho</h1>
+            <p class="welcome-msg">Bem vindo ao nosso sistema de agendamento</p>
+        </div>
     </header>
 
-    <main>
-        <section id="agendamento">
-            <form id="form-agendamento">
-                <label for="select-servico">O que vamos fazer hoje?</label>
-                <select id="select-servico" required></select>
+    <main class="container">
+        <section class="booking-card">
+            <div class="card">
+                <form id="form-agendamento">
+                    <div class="input-field">
+                        <label>O que vamos fazer?</label>
+                        <select id="select-servico" required><option value="">Carregando...</option></select>
+                    </div>
 
-                <label for="select-barbeiro">Escolha o Barbeiro:</label>
-                <select id="select-barbeiro" required></select>
+                    <div class="input-field">
+                        <label>Escolha seu Barbeiro:</label>
+                        <select id="select-barbeiro" required><option value="">Carregando...</option></select>
+                    </div>
 
-                <label for="input-data">Selecione a Data:</label>
-                <input type="date" id="input-data" required>
+                    <div class="input-field">
+                        <label>Data:</label>
+                        <input type="date" id="input-data" required>
+                    </div>
 
-                <label for="select-horario">Horário Disponível:</label>
-                <select id="select-horario" required>
-                    <option value="">Selecione a data primeiro...</option>
-                </select>
+                    <div class="input-field">
+                        <label>Horário Disponível:</label>
+                        <select id="select-horario" required><option value="">Escolha a data primeiro...</option></select>
+                    </div>
 
-                <hr>
+                    <hr class="separator">
 
-                <label for="input-nome">Seu Nome:</label>
-                <input type="text" id="input-nome" placeholder="Ex: Guilherme" required>
+                    <div class="input-field">
+                        <label>Seu Nome:</label>
+                        <input type="text" id="input-nome" placeholder="Como podemos te chamar?" required>
+                    </div>
 
-                <label for="input-whatsapp">Seu WhatsApp:</label>
-                <input type="tel" id="input-whatsapp" placeholder="Ex: 11999999999" required>
+                    <div class="input-field">
+                        <label>Seu WhatsApp:</label>
+                        <input type="tel" id="input-whatsapp" placeholder="11999999999" required>
+                    </div>
 
-                <label for="select-pagamento">Forma de Pagamento:</label>
-                <select id="select-pagamento" required>
-                    <option value="presencial">Pagar na barbearia</option>
-                    <option value="pix">PIX (Enviar comprovante)</option>
-                </select>
+                    <div class="input-field">
+                        <label>Forma de Pagamento:</label>
+                        <select id="select-pagamento" required>
+                            <option value="presencial">Pagar na barbearia</option>
+                            <option value="pix">PIX (Vou enviar comprovante)</option>
+                        </select>
+                    </div>
 
-                <button type="submit" id="btn-agendar">Confirmar Agendamento</button>
-            </form>
+                    <button type="submit" id="btn-agendar" class="btn-submit">CONFIRMAR AGENDAMENTO</button>
+                </form>
 
-            <div id="comprovante" style="display: none; text-align: center; background: #fff; color: #333; padding: 20px; border-radius: 8px; margin-top: 20px;">
-                <h3 style="color: #25D366;">✓ Agendado!</h3>
-                <div id="texto-comprovante" style="margin: 15px 0; font-size: 14px; line-height: 1.6;"></div>
+                <div id="comprovante" style="display: none; padding: 20px; text-align: center; background: #222; border: 2px solid #25D366; border-radius: 10px; margin-top: 20px;">
+                    <div id="texto-comprovante"></div>
+                </div>
             </div>
         </section>
     </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2026 Barbearia do Neguinho</p>
+    </footer>
 
     <script type="module" src="script.js"></script>
 </body>

@@ -1,107 +1,147 @@
+/* RESET E DEFINIÇÕES GERAIS */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
 body {
-    background-color: #f4f4f9;
-    color: #333;
+    background-color: #121212; /* Fundo bem escuro */
+    color: #e0e0e0;
     line-height: 1.6;
 }
 
-header {
-    background: #1a1a1a;
-    color: #fff;
-    padding: 1rem 0;
-    text-align: center;
+.container {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-header nav ul {
-    list-style: none;
+/* HEADER E BEM-VINDO */
+.main-header {
+    text-align: center;
+    padding: 40px 0 20px;
+    background: linear-gradient(180deg, #1a1a1a 0%, #121212 100%);
+}
+
+.main-header h1 {
+    color: #f3ad16; /* Dourado da Barbearia */
+    font-size: 2.2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+}
+
+.welcome-msg {
+    color: #888;
+    font-size: 1.1rem;
+    font-weight: 300;
+}
+
+/* CARD DE AGENDAMENTO */
+.card {
+    background-color: #1e1e1e;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border: 1px solid #333;
+}
+
+/* CAMPOS DE ENTRADA */
+.input-field {
+    margin-bottom: 20px;
+}
+
+.input-field label {
+    display: block;
+    margin-bottom: 8px;
+    color: #f3ad16;
+    font-weight: bold;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.input-field select, 
+.input-field input {
+    width: 100%;
+    padding: 12px;
+    background-color: #2a2a2a;
+    border: 2px solid #333;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.input-field select:focus, 
+.input-field input:focus {
+    outline: none;
+    border-color: #f3ad16;
+}
+
+/* DIVISOR */
+.separator {
+    border: 0;
+    border-top: 1px solid #333;
+    margin: 25px 0;
+}
+
+/* BOTÃO PRINCIPAL */
+.btn-submit {
+    width: 100%;
+    padding: 15px;
+    background-color: #f3ad16;
+    color: #1a1a1a;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.2s, background-color 0.3s;
+    text-transform: uppercase;
     margin-top: 10px;
 }
 
-header nav ul li {
-    display: inline;
-    margin: 0 15px;
+.btn-submit:hover {
+    background-color: #d49612;
+    transform: translateY(-2px);
 }
 
-header nav ul li a {
-    color: #f3ad16;
-    text-decoration: none;
-    font-weight: bold;
+.btn-submit:active {
+    transform: translateY(0);
 }
 
-main {
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
+.btn-submit:disabled {
+    background-color: #555;
+    cursor: not-allowed;
 }
 
-section {
-    background: #fff;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+/* ÁREA DE SUCESSO (COMPROVANTE) */
+#comprovante {
+    animation: fadeIn 0.5s ease-in-out;
 }
 
-h2 {
-    color: #1a1a1a;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+#texto-comprovante h3 {
     margin-bottom: 15px;
+    font-size: 1.5rem;
 }
 
-.etapa-formulario {
-    margin-bottom: 15px;
-}
-
-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-input, select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    margin-bottom: 10px;
-}
-
-button {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    background: #f3ad16;
-    color: #1a1a1a;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-button:hover {
-    background: #d49510;
-}
-
-.card-agendamento {
-    background: #fafafa;
-    border-left: 4px solid #f3ad16;
-    padding: 15px;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.card-agendamento p {
-    margin-bottom: 5px;
-}
-
-.card-agendamento span {
-    font-weight: bold;
+/* FOOTER */
+.main-footer {
+    text-align: center;
+    padding: 40px 0;
     color: #555;
+    font-size: 0.8rem;
+}
+
+/* BANNER PWA */
+#install-container {
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
