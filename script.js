@@ -1,6 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
+// 1. CONFIGURAÇÃO DO SEU FIREBASE
 const firebaseConfig = {
   apiKey: "AIzaSyBpFhgPMtUffKzs_yKFhzPzvCe0WsTICQk",
   authDomain: "sistema-barbearia-neguinho.firebaseapp.com",
@@ -13,6 +14,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+// 2. DADOS DOS PROFISSIONAIS E SERVIÇOS
 const servicos = [
     { id: 1, nome: "Corte de Cabelo", preco: 45.00 },
     { id: 2, nome: "Barba", preco: 35.00 },
@@ -21,12 +23,14 @@ const servicos = [
 ];
 
 const barbeiros = [
-    { id: 1, nome: "Mário", telefone: "5511941455171" }, 
-    { id: 2, nome: "Marquinho", telefone: "5511943415447" }
+    { id: 1, nome: "Mário", telefone: "5511998970012" }, 
+    { id: 2, nome: "Marquinho", telefone: "5511943415447" },
+    { id: 3, nome: "Guilherme TESTES", telefone: "5511941455171" }
 ];
 
 const todosHorarios = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00", "18:30", "19:00"];
 
+// 3. SELEÇÃO DE ELEMENTOS
 const selectServico = document.getElementById('select-servico');
 const selectBarbeiro = document.getElementById('select-barbeiro');
 const selectHorario = document.getElementById('select-horario');
@@ -34,6 +38,7 @@ const selectPagamento = document.getElementById('select-pagamento');
 const inputData = document.getElementById('input-data');
 const formAgendamento = document.getElementById('form-agendamento');
 
+// 4. INICIALIZAÇÃO DA INTERFACE
 function init() {
     servicos.forEach(s => {
         const opt = document.createElement('option');
@@ -56,6 +61,7 @@ function init() {
     atualizarHorariosDisponiveis();
 }
 
+// 5. FILTRO DINÂMICO DE HORÁRIOS (EVITA OVERBOOKING)
 async function atualizarHorariosDisponiveis() {
     const dataBR = inputData.value.split('-').reverse().join('/');
     const idBarbeiro = parseInt(selectBarbeiro.value);
@@ -88,37 +94,13 @@ async function atualizarHorariosDisponiveis() {
     }
 }
 
-async function gerarPagamentoMercadoPago(servico, cliente) {
-    const access_token = "COLE_SEU_ACCESS_TOKEN_AQUI"; 
-
-    const dadosPagamento = {
-        items: [{ title: servico.nome, unit_price: servico.preco, quantity: 1, currency_id: "BRL" }],
-        payer: { name: cliente.nome },
-        back_urls: {
-            success: window.location.href.replace("index.html", ""),
-            failure: window.location.href.replace("index.html", "")
-        },
-        auto_return: "approved"
-    };
-
-    try {
-        const response = await fetch("https://api.mercadopago.com/checkout/preferences", {
-            method: "POST",
-            headers: { "Authorization": `Bearer ${access_token}`, "Content-Type": "application/json" },
-            body: JSON.stringify(dadosPagamento)
-        });
-        const data = await response.json();
-        return data.init_point; 
-    } catch (error) {
-        return null;
-    }
-}
-
+// 6. EVENTOS DE MUDANÇA
 selectBarbeiro.addEventListener('change', atualizarHorariosDisponiveis);
 inputData.addEventListener('change', atualizarHorariosDisponiveis);
 
 init();
 
+// 7. ENVIO DO FORMULÁRIO
 formAgendamento.addEventListener('submit', async (e) => {
     e.preventDefault(); 
     
@@ -138,12 +120,8 @@ formAgendamento.addEventListener('submit', async (e) => {
     const barbeiro = barbeiros.find(b => b.id === idBarbeiro);
 
     try {
-        let linkMP = null;
-        if (metodoPagamento === 'pix') {
-            linkMP = await gerarPagamentoMercadoPago(servico, { nome: nomeCliente });
-        }
-
-        await addDoc(collection(db, "agendamentos"), {
+        // Salva no Firestore
+        const docRef = await addDoc(collection(db, "agendamentos"), {
             cliente: nomeCliente,
             contato: whatsappCliente,
             servico: servico.nome,
@@ -155,29 +133,58 @@ formAgendamento.addEventListener('submit', async (e) => {
             status: "pendente",
             timestamp: new Date()
         });
-        
-        let htmlComprovante = `<strong>Confirmado:</strong> ${nomeCliente}<br><strong>Serviço:</strong> ${servico.nome}<br><strong>Data:</strong> ${dataBR} às ${horarioEscolhido}<br>`;
 
-        if (metodoPagamento === 'pix' && linkMP) {
-            htmlComprovante += `<div style="background: #e1f5fe; padding: 15px; border-radius: 8px; margin-top: 15px;"><a href="${linkMP}" target="_blank" style="display: block; background: #009EE3; color: white; padding: 15px; border-radius: 6px; text-align: center; font-weight: bold; margin-top: 10px; text-decoration: none;">💳 PAGAR PIX AGORA</a></div>`;
+        // Define a URL base para o link de cancelamento
+        let urlBase = window.location.href.split('index.html')[0].split('#')[0];
+        if (urlBase.includes('127.0.0.1') || urlBase.includes('localhost')) {
+            urlBase = "https://guilherme-gts.github.io/Site-Barbearia/";
         }
-
-        let textoZap = `Olá ${barbeiro.nome}! Novo agendamento:\n\n👤 *Cliente:* ${nomeCliente}\n✂️ *Serviço:* ${servico.nome}\n📅 *Data:* ${dataBR} às ${horarioEscolhido}\n💰 *Pgto:* ${metodoPagamento.toUpperCase()}`;
+        const linkCancelamento = `${urlBase}cancelar.html?id=${docRef.id}`;
         
-        // Se for Pix, adiciona um lembrete para mandar a foto
+        // FORMATAÇÃO DA MENSAGEM PARA WHATSAPP
+        const divisor = "==========================";
+        let textoZap = `✂️ *BARBEARIA DO NEGUINHO* ✂️\n`;
+        textoZap += `_Sua agenda digital_\n\n`;
+        textoZap += `🗓️ *MEU AGENDAMENTO*\n\n`;
+        textoZap += `👤 *CLIENTE:* ${nomeCliente}\n`;
+        textoZap += `📞 *TEL:* ${whatsappCliente}\n`;
+        textoZap += `${divisor}\n`;
+        textoZap += `📆 *DIA:* ${dataBR}\n`;
+        textoZap += `⏰ *HORA:* ${horarioEscolhido}\n\n`;
+        textoZap += `💈 *BARBEIRO:* ${barbeiro.nome}\n`;
+        textoZap += `✂️ *SERVIÇO:* ${servico.nome}\n`;
+        textoZap += `💰 *VALOR:* R$ ${servico.preco.toFixed(2)}\n`;
+        textoZap += `💳 *PGTO:* ${metodoPagamento.toUpperCase()}\n`;
+        textoZap += `${divisor}\n\n`;
+        
         if (metodoPagamento === 'pix') {
-            textoZap += `\n\n📄 *Comprovante:* [Anexe a foto do comprovante nesta conversa]`;
+            textoZap += `✅ *COMPROVANTE:* [Anexe o print aqui]\n\n`;
         }
+
+        textoZap += `❌ *PARA CANCELAR:*\n`;
+        textoZap += `${linkCancelamento}\n\n`;
+        textoZap += `_Comprovante gerado pelo site_`;
 
         const linkWhatsApp = `https://wa.me/${barbeiro.telefone}?text=${encodeURIComponent(textoZap)}`;
 
-        htmlComprovante += `<a href="${linkWhatsApp}" target="_blank" style="display: block; background: #25D366; color: white; padding: 15px; border-radius: 6px; text-align: center; font-weight: bold; margin-top: 20px; text-decoration: none;">📱 Avisar no WhatsApp</a>`;
+        // ATUALIZA A TELA COM O RESULTADO
+        document.getElementById('texto-comprovante').innerHTML = `
+            <strong>Confirmado com sucesso!</strong><br>
+            <strong>Cliente:</strong> ${nomeCliente}<br>
+            <strong>Data:</strong> ${dataBR} às ${horarioEscolhido}<br>
+            <br>
+            <a href="${linkWhatsApp}" target="_blank" style="display: block; background: #25D366; color: white; padding: 15px; border-radius: 6px; text-align: center; font-weight: bold; margin-top: 10px; text-decoration: none;">
+                📱 ENVIAR NO WHATSAPP
+            </a>
+            <p style="font-size: 11px; color: #777; margin-top: 10px;">Clique no botão acima para avisar o barbeiro.</p>
+        `;
 
-        document.getElementById('texto-comprovante').innerHTML = htmlComprovante;
         formAgendamento.style.display = 'none'; 
         document.getElementById('comprovante').style.display = 'block'; 
+
     } catch (err) {
-        alert("Erro. Tente novamente.");
+        console.error("Erro fatal ao salvar agendamento:", err);
+        alert("Erro técnico ao salvar. Verifique sua conexão.");
         btnAgendar.disabled = false;
         btnAgendar.textContent = "Confirmar Agendamento";
     }
