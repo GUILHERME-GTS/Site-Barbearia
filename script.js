@@ -30,7 +30,7 @@ async function init() {
         servicos = []; barbeiros = [];
 
         const snapServ = await getDocs(collection(db, "servicos"));
-        selectServico.innerHTML = '<option value="">Selecione o serviço...</option>';
+        selectServico.innerHTML = '<option value="">O que vamos fazer?</option>';
         snapServ.forEach(doc => {
             const d = doc.data();
             servicos.push({ id: doc.id, ...d });
@@ -41,7 +41,7 @@ async function init() {
         });
 
         const snapBarb = await getDocs(collection(db, "barbeiros"));
-        selectBarbeiro.innerHTML = '<option value="">Selecione o barbeiro...</option>';
+        selectBarbeiro.innerHTML = '<option value="">Escolha seu Barbeiro:</option>';
         snapBarb.forEach(doc => {
             const d = doc.data();
             barbeiros.push({ id: doc.id, ...d });
@@ -63,7 +63,7 @@ async function atualizarHorariosDisponiveis() {
     const barb = barbeiros.find(b => b.id === idBarb);
     if (!barb || !dataBR) return;
 
-    selectHorario.innerHTML = '<option value="">Verificando...</option>';
+    selectHorario.innerHTML = '<option value="">Verificando horários...</option>';
     try {
         const q = query(collection(db, "agendamentos"), where("data", "==", dataBR), where("profissional", "==", barb.nome));
         const snap = await getDocs(q);
@@ -113,9 +113,9 @@ formAgendamento.addEventListener('submit', async (e) => {
         const linkZap = `https://wa.me/${barb.telefone}?text=${encodeURIComponent(msg)}`;
 
         document.getElementById('texto-comprovante').innerHTML = `
-            <h3 style="color:#25D366">Agendado com Sucesso!</h3>
-            <p style="color:#fff">Tudo certo para dia <strong>${dataBR}</strong> às <strong>${hora}</strong>.</p>
-            <a href="${linkZap}" target="_blank" style="display:inline-block; background:#25D366; color:white; padding:15px 25px; border-radius:8px; text-decoration:none; font-weight:bold; margin-top:15px;">📱 ENVIAR NO WHATSAPP</a>
+            <h3 style="color:#25D366">✓ Agendado com Sucesso!</h3>
+            <p style="color:#fff; margin: 15px 0;">Tudo certo para dia <strong>${dataBR}</strong> às <strong>${hora}</strong>.</p>
+            <a href="${linkZap}" target="_blank" style="display:inline-block; background:#25D366; color:white; padding:15px 25px; border-radius:8px; text-decoration:none; font-weight:bold;">📱 ENVIAR NO WHATSAPP</a>
         `;
         formAgendamento.style.display = 'none';
         document.getElementById('comprovante').style.display = 'block';

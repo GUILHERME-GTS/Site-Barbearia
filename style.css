@@ -145,3 +145,19 @@ body {
 #install-container {
     box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
+.main-logo {
+    width: 150px; /* Tamanho ideal para a logo */
+    height: auto;
+    margin-bottom: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    /* Adiciona um brilho leve para destacar no fundo escuro */
+    filter: drop-shadow(0 0 8px rgba(243, 173, 22, 0.3));
+}
+
+.main-header {
+    text-align: center;
+    padding: 40px 0 20px;
+
+}

@@ -24,8 +24,12 @@
 
     <header class="main-header">
         <div class="container">
-            <h1>Barbearia do Neguinho</h1>
+            <img src="Fotos/logo.png" alt="Logo Barbearia do Neguinho" class="main-logo">
+            <h1>BARBEARIA DO NEGUINHO</h1>
             <p class="welcome-msg">Bem vindo ao nosso sistema de agendamento</p>
+            <p style="color: #f3ad16; font-size: 0.85rem; margin-top: 10px; font-weight: bold;">
+                📍 Estrada Atílio Squizatto, 4951 - Sala 2, Roseiral, Jarinu - SP
+            </p>
         </div>
     </header>
 
@@ -35,12 +39,16 @@
                 <form id="form-agendamento">
                     <div class="input-field">
                         <label>O que vamos fazer?</label>
-                        <select id="select-servico" required><option value="">Carregando...</option></select>
+                        <select id="select-servico" required>
+                            <option value="">Carregando serviços...</option>
+                        </select>
                     </div>
 
                     <div class="input-field">
                         <label>Escolha seu Barbeiro:</label>
-                        <select id="select-barbeiro" required><option value="">Carregando...</option></select>
+                        <select id="select-barbeiro" required>
+                            <option value="">Carregando barbeiros...</option>
+                        </select>
                     </div>
 
                     <div class="input-field">
@@ -50,7 +58,9 @@
 
                     <div class="input-field">
                         <label>Horário Disponível:</label>
-                        <select id="select-horario" required><option value="">Escolha a data primeiro...</option></select>
+                        <select id="select-horario" required>
+                            <option value="">Escolha a data primeiro...</option>
+                        </select>
                     </div>
 
                     <hr class="separator">
