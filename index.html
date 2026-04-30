@@ -5,6 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema de Agendamento - Barbearia do Neguinho</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#f3ad16">
+
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+      .then(() => console.log("Service Worker Registrado!"))
+      .catch(err => console.log("Erro ao registrar SW:", err));
+  }
+</script>
 </head>
 <body>
     <header>
