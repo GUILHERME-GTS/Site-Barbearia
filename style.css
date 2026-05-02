@@ -1,4 +1,6 @@
-/* RESET E DEFINIÇÕES GERAIS */
+/* ============================================================
+   RESET E DEFINIÇÕES GERAIS
+   ============================================================ */
 * {
     margin: 0;
     padding: 0;
@@ -7,9 +9,20 @@
 }
 
 body {
-    background-color: #121212; /* Fundo bem escuro */
+    /* Gradiente dinâmico em tons de cinza e preto */
+    background: linear-gradient(-45deg, #0f0f0f, #1a1a1a, #252525, #0f0f0f);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
     color: #e0e0e0;
     line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Animação do fundo */
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .container {
@@ -19,15 +32,27 @@ body {
     padding: 20px;
 }
 
-/* HEADER E BEM-VINDO */
+/* ============================================================
+   HEADER E LOGO
+   ============================================================ */
 .main-header {
     text-align: center;
     padding: 40px 0 20px;
-    background: linear-gradient(180deg, #1a1a1a 0%, #121212 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-logo {
+    width: 150px;
+    height: auto;
+    margin-bottom: 20px;
+    /* Brilho dourado suave na logo */
+    filter: drop-shadow(0 0 8px rgba(243, 173, 22, 0.4));
 }
 
 .main-header h1 {
-    color: #f3ad16; /* Dourado da Barbearia */
+    color: #f3ad16; /* Dourado padrão */
     font-size: 2.2rem;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -40,16 +65,23 @@ body {
     font-weight: 300;
 }
 
-/* CARD DE AGENDAMENTO */
+/* ============================================================
+   CARD DE AGENDAMENTO (GLASSMORPHISM)
+   ============================================================ */
 .card {
-    background-color: #1e1e1e;
+    background-color: rgba(30, 30, 30, 0.9); /* Transparência para o fundo animado */
+    backdrop-filter: blur(8px); /* Efeito de vidro embaçado */
     padding: 30px;
     border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    border: 1px solid #333;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    border: 1px solid rgba(243, 173, 22, 0.2); /* Borda dourada sutil */
+    position: relative;
+    overflow: hidden;
 }
 
-/* CAMPOS DE ENTRADA */
+/* ============================================================
+   FORMULÁRIOS E INPUTS
+   ============================================================ */
 .input-field {
     margin-bottom: 20px;
 }
@@ -66,32 +98,35 @@ body {
 .input-field select, 
 .input-field input {
     width: 100%;
-    padding: 12px;
+    padding: 14px;
     background-color: #2a2a2a;
     border: 2px solid #333;
     border-radius: 8px;
     color: #fff;
     font-size: 1rem;
-    transition: border-color 0.3s;
+    transition: all 0.3s ease;
 }
 
 .input-field select:focus, 
 .input-field input:focus {
     outline: none;
     border-color: #f3ad16;
+    background-color: #333;
+    box-shadow: 0 0 10px rgba(243, 173, 22, 0.2);
 }
 
-/* DIVISOR */
 .separator {
     border: 0;
     border-top: 1px solid #333;
     margin: 25px 0;
 }
 
-/* BOTÃO PRINCIPAL */
+/* ============================================================
+   BOTÃO PRINCIPAL
+   ============================================================ */
 .btn-submit {
     width: 100%;
-    padding: 15px;
+    padding: 16px;
     background-color: #f3ad16;
     color: #1a1a1a;
     border: none;
@@ -99,14 +134,15 @@ body {
     font-size: 1.1rem;
     font-weight: 800;
     cursor: pointer;
-    transition: transform 0.2s, background-color 0.3s;
+    transition: all 0.3s ease;
     text-transform: uppercase;
     margin-top: 10px;
 }
 
 .btn-submit:hover {
     background-color: #d49612;
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(243, 173, 22, 0.4);
 }
 
 .btn-submit:active {
@@ -116,24 +152,40 @@ body {
 .btn-submit:disabled {
     background-color: #555;
     cursor: not-allowed;
+    transform: none;
 }
 
-/* ÁREA DE SUCESSO (COMPROVANTE) */
+/* ============================================================
+   ÁREA DE SUCESSO (WHATSAPP)
+   ============================================================ */
 #comprovante {
-    animation: fadeIn 0.5s ease-in-out;
+    animation: fadeIn 0.6s ease-out;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
 }
 
-#texto-comprovante h3 {
-    margin-bottom: 15px;
-    font-size: 1.5rem;
+.btn-whatsapp {
+    display: inline-block;
+    background-color: #25D366;
+    color: #fff;
+    padding: 15px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 15px;
+    transition: background 0.3s;
 }
 
-/* FOOTER */
+.btn-whatsapp:hover {
+    background-color: #128C7E;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
 .main-footer {
     text-align: center;
     padding: 40px 0;
@@ -141,23 +193,27 @@ body {
     font-size: 0.8rem;
 }
 
-/* BANNER PWA */
-#install-container {
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-}
-.main-logo {
-    width: 150px; /* Tamanho ideal para a logo */
-    height: auto;
-    margin-bottom: 20px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    /* Adiciona um brilho leve para destacar no fundo escuro */
-    filter: drop-shadow(0 0 8px rgba(243, 173, 22, 0.3));
+/* ============================================================
+   BOTÃO GPS (HEADER)
+   ============================================================ */
+.btn-gps {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 8px 16px;
+    background-color: transparent;
+    color: #f3ad16;
+    border: 2px solid #f3ad16;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
 }
 
-.main-header {
-    text-align: center;
-    padding: 40px 0 20px;
-
+.btn-gps:hover {
+    background-color: #f3ad16;
+    color: #1a1a1a;
+    box-shadow: 0 0 15px rgba(243, 173, 22, 0.4);
+    transform: translateY(-2px);
 }
