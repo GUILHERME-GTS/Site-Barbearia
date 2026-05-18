@@ -93,9 +93,15 @@ formAgendamento.addEventListener('submit', async (e) => {
     const dataBR = inputData.value.split('-').reverse().join('/');
     const hora = selectHorario.value;
     const nome = document.getElementById('input-nome').value;
-    const zap = document.getElementById('input-whatsapp').value;
-    const pgto = document.getElementById('select-pagamento').value;
+   const zap = document.getElementById('input-whatsapp').value.replace(/\D/g, '');
+const pgto = document.getElementById('select-pagamento').value;
 
+if (zap.length < 10 || zap.length > 11) {
+    alert("⚠️ Digite um WhatsApp válido com DDD! Ex: 11999999999");
+    btn.disabled = false;
+    btn.textContent = "CONFIRMAR AGENDAMENTO";
+    return;
+}
     try {
         const docRef = await addDoc(collection(db, "agendamentos"), {
             cliente: nome, contato: zap, servico: serv.nome, valor: serv.preco, profissional: barb.nome,
