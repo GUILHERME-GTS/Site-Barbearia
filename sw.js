@@ -1,4 +1,4 @@
-const CACHE_NAME = 'barbearia-v1';
+const CACHE_NAME = 'barbearia-v2';
 const assets = [
   './',
   './index.html',
@@ -9,20 +9,22 @@ const assets = [
   './manifest.json'
 ];
 
-// Instala o Service Worker e guarda os arquivos no cache
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(assets);
-    })
+    caches.open(CACHE_NAME).then(cache => cache.addAll(assets))
   );
 });
 
-// Faz o site carregar o que está no cache se estiver sem internet
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+    )
+  );
+});
+
 self.addEventListener('fetch', event => {
   event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
-    })
+    caches.match(event.request).then(response => response || fetch(event.request))
   );
 });
