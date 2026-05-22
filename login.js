@@ -31,3 +31,23 @@ form.addEventListener('submit', (e) => {
             console.error("Erro no login:", error.code);
         });
 });
+
+// FILTRO POR DATA
+document.getElementById('btn-filtrar').addEventListener('click', () => {
+    const filtro = document.getElementById('filtro-data').value;
+    if (!filtro) {
+        alert("Escolha uma data para filtrar!");
+        return;
+    }
+    const dataBR = filtro.split('-').reverse().join('/');
+    const cards = document.querySelectorAll('.card-agendamento');
+    cards.forEach(card => {
+        const textoData = card.querySelector('p').textContent;
+        card.style.display = textoData.includes(dataBR) ? 'block' : 'none';
+    });
+});
+
+document.getElementById('btn-todos').addEventListener('click', () => {
+    const cards = document.querySelectorAll('.card-agendamento');
+    cards.forEach(card => card.style.display = 'block');
+});
