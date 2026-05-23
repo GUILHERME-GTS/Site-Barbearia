@@ -6,15 +6,14 @@
     <title>Admin - Barbearia do Neguinho</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#f3ad16">
-
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js')
-      .then(() => console.log("Service Worker Registrado!"))
-      .catch(err => console.log("Erro ao registrar SW:", err));
-  }
-</script>
+    <meta name="theme-color" content="#f3ad16">
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+          .then(() => console.log("Service Worker Registrado!"))
+          .catch(err => console.log("Erro ao registrar SW:", err));
+      }
+    </script>
 </head>
 <body>
     <header>
@@ -28,14 +27,15 @@
 
     <main>
         <section id="agenda">
-           <h2 style="text-align: center; color: #fff; background: #333; padding: 10px; border-radius: 8px;">Agenda - Calculando...</h2>
+            <h2 style="text-align: center; color: #fff; background: #333; padding: 10px; border-radius: 8px;">Agenda - Calculando...</h2>
 
-<div style="text-align: center; margin: 15px 0;">
-    <label style="color: #f3ad16; font-weight: bold;">Filtrar por data:</label>
-    <input type="date" id="filtro-data" style="padding: 8px; margin-left: 10px; border-radius: 6px; border: 2px solid #f3ad16; background: #2a2a2a; color: #fff; font-size: 1rem;">
-    <button id="btn-filtrar" style="margin-left: 10px; padding: 8px 15px; background: #f3ad16; color: #1a1a1a; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">FILTRAR</button>
-    <button id="btn-todos" style="margin-left: 8px; padding: 8px 15px; background: #555; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">VER TODOS</button>
-</div>
+            <div style="text-align: center; margin: 15px 0;">
+                <label style="color: #f3ad16; font-weight: bold;">Filtrar por data:</label>
+                <input type="date" id="filtro-data" style="padding: 8px; margin-left: 10px; border-radius: 6px; border: 2px solid #f3ad16; background: #2a2a2a; color: #fff; font-size: 1rem;">
+                <button id="btn-filtrar" style="margin-left: 10px; padding: 8px 15px; background: #f3ad16; color: #1a1a1a; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">FILTRAR</button>
+                <button id="btn-todos" style="margin-left: 8px; padding: 8px 15px; background: #555; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">VER TODOS</button>
+            </div>
+            
             <div id="lista-agendamentos" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
                 <p style="text-align: center;">Carregando agendamentos...</p>
             </div>

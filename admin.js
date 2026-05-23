@@ -33,7 +33,7 @@ async function cancelarAgendamento(id) {
         try {
             await deleteDoc(doc(db, "agendamentos", id));
             alert("Agendamento cancelado com sucesso!");
-            carregarAgenda(); // Recarrega a lista para sumir o card
+            carregarAgenda();
         } catch (erro) {
             console.error("Erro ao cancelar:", erro);
             alert("Erro ao tentar cancelar o agendamento.");
@@ -59,14 +59,14 @@ async function carregarAgenda() {
 
         resultado.forEach((documento) => {
             const dados = documento.data();
-            const id = documento.id; // Pegamos o ID único do documento no Firebase
+            const id = documento.id;
             
             const valorServico = parseFloat(dados.valor) || 0;
             faturamentoTotal += valorServico;
 
             const divCard = document.createElement('div');
             divCard.className = 'card-agendamento';
-            divCard.style.position = 'relative'; // Para posicionar o botão se quiser
+            divCard.style.position = 'relative';
             
             const corPgto = dados.pagamento === 'pix' ? '#25D366' : '#f3ad16';
 
@@ -83,7 +83,6 @@ async function carregarAgenda() {
             containerAgendamentos.appendChild(divCard);
         });
 
-        // Adiciona o evento de clique em todos os botões de cancelar
         document.querySelectorAll('.btn-cancelar').forEach(botao => {
             botao.addEventListener('click', () => {
                 const idAgendamento = botao.getAttribute('data-id');
@@ -100,3 +99,23 @@ async function carregarAgenda() {
         containerAgendamentos.innerHTML = '<p style="color: red; text-align: center;">Erro ao carregar os dados.</p>';
     }
 }
+
+// FILTRO POR DATA
+document.getElementById('btn-filtrar').addEventListener('click', () => {
+    const filtro = document.getElementById('filtro-data').value;
+    if (!filtro) {
+        alert("Escolha uma data para filtrar!");
+        return;
+    }
+    const dataBR = filtro.split('-').reverse().join('/');
+    const cards = document.querySelectorAll('.card-agendamento');
+    cards.forEach(card => {
+        const textoData = card.querySelector('p').textContent;
+        card.style.display = textoData.includes(dataBR) ? 'block' : 'none';
+    });
+});
+
+document.getElementById('btn-todos').addEventListener('click', () => {
+    const cards = document.querySelectorAll('.card-agendamento');
+    cards.forEach(card => card.style.display = 'block');
+});
