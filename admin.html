@@ -15,60 +15,156 @@
       }
     </script>
     <style>
-        .abas { display: flex; gap: 10px; padding: 15px; background: #1a1a1a; }
-        .aba { padding: 10px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; }
-        .aba.ativa { background: #f3ad16; color: #1a1a1a; }
-        .aba.inativa { background: #333; color: #fff; }
-        .painel { display: none; padding: 15px; }
+        /* HEADER ADMIN */
+        header {
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #f3ad16;
+        }
+        header h1 { color: #f3ad16; font-size: 1.5rem; letter-spacing: 2px; }
+        header a { color: #888; text-decoration: none; font-size: 0.85rem; border: 1px solid #555; padding: 6px 14px; border-radius: 6px; transition: all 0.3s; }
+        header a:hover { color: #f3ad16; border-color: #f3ad16; }
+
+        /* ABAS */
+        .abas { display: flex; gap: 0; background: #111; border-bottom: 2px solid #333; }
+        .aba { flex: 1; padding: 15px; border: none; font-weight: bold; cursor: pointer; font-size: 1rem; transition: all 0.3s; background: transparent; color: #666; letter-spacing: 1px; }
+        .aba.ativa { color: #f3ad16; border-bottom: 3px solid #f3ad16; background: #1a1a1a; }
+        .aba:hover:not(.ativa) { color: #aaa; background: #1a1a1a; }
+
+        /* PAINEIS */
+        .painel { display: none; padding: 25px; max-width: 900px; margin: 0 auto; }
         .painel.ativo { display: block; }
-        .card-agendamento { background: #1e1e1e; border: 1px solid #333; border-radius: 10px; padding: 15px; color: #fff; }
+
+        /* CARDS DE AGENDAMENTO */
+        .card-agendamento {
+            background: #1e1e1e;
+            border: 1px solid #2a2a2a;
+            border-left: 4px solid #f3ad16;
+            border-radius: 10px;
+            padding: 18px 20px;
+            color: #fff;
+            transition: transform 0.2s;
+        }
+        .card-agendamento:hover { transform: translateX(4px); }
+        .card-agendamento p { margin-bottom: 6px; font-size: 0.95rem; }
         .card-agendamento span { color: #f3ad16; font-weight: bold; }
-        .secao-gerenciar { background: #1e1e1e; border: 1px solid #333; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
-        .secao-gerenciar h3 { color: #f3ad16; margin-bottom: 15px; }
-        .secao-gerenciar input { width: 100%; padding: 10px; margin-bottom: 10px; background: #2a2a2a; border: 2px solid #333; border-radius: 8px; color: #fff; font-size: 1rem; }
+
+        /* TÍTULO FATURAMENTO */
+        .titulo-agenda {
+            text-align: center;
+            color: #fff;
+            background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        /* FILTRO */
+        .filtro-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #333;
+        }
+        .filtro-container label { color: #f3ad16; font-weight: bold; font-size: 0.9rem; }
+        .filtro-container input { padding: 8px 12px; border-radius: 6px; border: 2px solid #444; background: #2a2a2a; color: #fff; font-size: 0.95rem; }
+        .filtro-container input:focus { outline: none; border-color: #f3ad16; }
+        .btn-filtrar { padding: 8px 18px; background: #f3ad16; color: #1a1a1a; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .btn-ver-todos { padding: 8px 18px; background: #333; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+
+        /* SEÇÕES GERENCIAR */
+        .secao-gerenciar {
+            background: #1e1e1e;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+        .secao-gerenciar h3 { color: #f3ad16; margin-bottom: 20px; font-size: 1.1rem; letter-spacing: 1px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .secao-gerenciar input {
+            width: 100%; padding: 12px; margin-bottom: 12px;
+            background: #2a2a2a; border: 2px solid #333;
+            border-radius: 8px; color: #fff; font-size: 1rem;
+        }
         .secao-gerenciar input:focus { outline: none; border-color: #f3ad16; }
-        .btn-adicionar { background: #f3ad16; color: #1a1a1a; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1rem; }
-        .item-lista { display: flex; justify-content: space-between; align-items: center; background: #2a2a2a; padding: 10px 15px; border-radius: 8px; margin-top: 8px; color: #fff; }
-        .btn-remover { background: #ff4d4d; color: white; border: none; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn-adicionar {
+            background: #f3ad16; color: #1a1a1a; border: none;
+            padding: 12px 20px; border-radius: 8px; font-weight: bold;
+            cursor: pointer; width: 100%; font-size: 1rem;
+            transition: background 0.3s;
+        }
+        .btn-adicionar:hover { background: #d49612; }
+
+        /* ITENS DA LISTA */
+        .item-lista {
+            display: flex; justify-content: space-between; align-items: center;
+            background: #2a2a2a; padding: 12px 16px;
+            border-radius: 8px; margin-top: 10px; color: #fff;
+            border-left: 3px solid #f3ad16;
+        }
+        .btn-remover {
+            background: #ff4d4d; color: white; border: none;
+            padding: 6px 14px; border-radius: 6px; cursor: pointer;
+            font-weight: bold; font-size: 0.85rem; transition: background 0.3s;
+        }
+        .btn-remover:hover { background: #cc0000; }
+        .btn-cancelar {
+            background: #ff4d4d; color: white; border: none;
+            margin-top: 12px; padding: 8px 16px; font-size: 0.85rem;
+            border-radius: 6px; cursor: pointer; font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>Painel do Barbeiro</h1>
-        <nav><ul><li><a href="index.html">Ver Site</a></li></ul></nav>
+        <h1>✂️ PAINEL DO BARBEIRO</h1>
+        <a href="index.html">← Ver Site</a>
     </header>
 
     <div class="abas">
-        <button class="aba ativa" onclick="mostrarAba('agenda', event)">📅 Agenda</button>
-        <button class="aba inativa" onclick="mostrarAba('gerenciar', event)">⚙️ Gerenciar</button>
+        <button class="aba ativa" onclick="mostrarAba('agenda', event)">📅 AGENDA</button>
+        <button class="aba inativa" onclick="mostrarAba('gerenciar', event)">⚙️ GERENCIAR</button>
     </div>
 
     <main>
         <!-- ABA AGENDA -->
         <div id="painel-agenda" class="painel ativo">
-            <h2 style="text-align: center; color: #fff; background: #333; padding: 10px; border-radius: 8px;">Agenda - Calculando...</h2>
-            <div style="text-align: center; margin: 15px 0;">
-                <label style="color: #f3ad16; font-weight: bold;">Filtrar por data:</label>
-                <input type="date" id="filtro-data" style="padding: 8px; margin-left: 10px; border-radius: 6px; border: 2px solid #f3ad16; background: #2a2a2a; color: #fff; font-size: 1rem;">
-                <button id="btn-filtrar" style="margin-left: 10px; padding: 8px 15px; background: #f3ad16; color: #1a1a1a; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">FILTRAR</button>
-                <button id="btn-todos" style="margin-left: 8px; padding: 8px 15px; background: #555; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">VER TODOS</button>
+            <h2 class="titulo-agenda">💰 Agenda — Calculando...</h2>
+
+            <div class="filtro-container">
+                <label>Filtrar por data:</label>
+                <input type="date" id="filtro-data">
+                <button class="btn-filtrar" id="btn-filtrar">FILTRAR</button>
+                <button class="btn-ver-todos" id="btn-todos">VER TODOS</button>
             </div>
-            <div id="lista-agendamentos" style="display: flex; flex-direction: column; gap: 15px; margin-top: 20px;">
-                <p style="text-align: center;">Carregando agendamentos...</p>
+
+            <div id="lista-agendamentos" style="display: flex; flex-direction: column; gap: 15px;">
+                <p style="text-align: center; color: #888;">Carregando agendamentos...</p>
             </div>
         </div>
 
         <!-- ABA GERENCIAR -->
         <div id="painel-gerenciar" class="painel">
             <div class="secao-gerenciar">
-                <h3>✂️ Serviços</h3>
+                <h3>✂️ SERVIÇOS</h3>
                 <input type="text" id="input-nome-servico" placeholder="Nome do serviço (ex: Corte + Barba)">
-                <input type="number" id="input-preco-servico" placeholder="Preço (ex: 45)">
+                <input type="number" id="input-preco-servico" placeholder="Preço em R$ (ex: 45)">
                 <button class="btn-adicionar" id="btn-add-servico">+ Adicionar Serviço</button>
                 <div id="lista-servicos" style="margin-top: 15px;"></div>
             </div>
+
             <div class="secao-gerenciar">
-                <h3>💈 Barbeiros</h3>
+                <h3>💈 BARBEIROS</h3>
                 <input type="text" id="input-nome-barbeiro" placeholder="Nome do barbeiro">
                 <input type="tel" id="input-tel-barbeiro" placeholder="WhatsApp com DDD (ex: 11999999999)">
                 <button class="btn-adicionar" id="btn-add-barbeiro">+ Adicionar Barbeiro</button>
