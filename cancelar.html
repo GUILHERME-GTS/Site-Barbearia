@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancelar Agendamento</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body style="display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+    <section style="max-width: 400px; width: 100%; text-align: center;">
+        <h2 style="color: #ff4d4d;">Cancelar Horário</h2>
+        <p style="margin-bottom: 20px;">Tem certeza que deseja cancelar sua visita à Barbearia do Neguinho?</p>
+        
+        <div id="area-botoes">
+            <button id="btn-confirmar-cancelamento" style="background: #ff4d4d; color: white; margin-bottom: 10px;">Sim, quero cancelar</button>
+            <a href="index.html" style="display: block; color: #555; text-decoration: none; margin-top: 15px; font-weight: bold;">Não, manter agendamento</a>
+        </div>
+
+        <p id="msg-status" style="display: none; font-weight: bold; margin-top: 15px;"></p>
+    </section>
+
+    <script type="module" src="cancelar.js"></script>
+</body>
+</html>
